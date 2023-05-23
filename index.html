@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gerenciamento de Tarefas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+        body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      padding: 20px;
+      background-color: #333;
+      color: #fff;
+    }
+
+    #task-list {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-top: 0;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    li:last-child {
+      border-bottom: none;
+    }
+
+    .task-completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+    /* Estilos CSS aqui */
+    .delete-icon{
+      color: red;
+      cursor: pointer;
+      float: right;
+    }
+    .edit-icon {
+      color: blue;
+      cursor: pointer;
+      float: right;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gerenciamento de Tarefas</h1>
+
+  <div id="task-list">
+    <h2>Lista de Tarefas</h2>
+    <ul id="tasks">
+      <!-- Aqui serão exibidas as tarefas -->
+    </ul>
+
+    <form id="task-form">
+      <input type="text" id="task-input" placeholder="Digite uma nova tarefa">
+      <button type="submit">Adicionar</button>
+    </form>
+  </div>
+
+  <script>
+    // Manipulação da lista de tarefas
+    const taskForm = document.getElementById('task-form');
+    const taskInput = document.getElementById('task-input');
+    const taskList = document.getElementById('tasks');
+    let editMode = false;
+    let editedTask = null;
+
+    taskForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const taskText = taskInput.value.trim();
+
+      if (taskText !== '') {
+        if (editMode) {
+          // Modo de edição
+          editedTask.firstChild.nextSibling.textContent = taskText;
+          taskInput.value = '';
+          taskInput.placeholder = 'Digite uma nova tarefa';
+          editMode = false;
+          editedTask = null;
+        } else {
+          // Modo de adição
+          const taskItem = document.createElement('li');
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.addEventListener('change', function() {
+            if (checkbox.checked) {
+              taskItem.classList.add('task-completed');
+            } else {
+              taskItem.classList.remove('task-completed');
+            }
+          });
+
+          const taskLabel = document.createElement('label');
+          taskLabel.innerText = taskText;
+
+          const deleteIcon = document.createElement('i');
+          deleteIcon.className = 'fas fa-trash-alt delete-icon';
+          deleteIcon.addEventListener('click', function() {
+            taskList.removeChild(taskItem);
+          });
+
+          const editIcon = document.createElement('i');
+          editIcon.className = 'fas fa-edit edit-icon';
+          editIcon.addEventListener('click', function() {
+            taskInput.value = taskLabel.textContent;
+            taskInput.placeholder = 'Editar tarefa';
+            editMode = true;
+            editedTask = taskItem;
+          });
+
+          taskItem.appendChild(checkbox);
+          taskItem.appendChild(taskLabel);
+          taskItem.appendChild(deleteIcon);
+          taskItem.appendChild(editIcon);
+
+          taskItem.classList.add('task-item');
+          taskList.appendChild(taskItem);
+          taskInput.value = '';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
